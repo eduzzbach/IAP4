@@ -1,5 +1,5 @@
 %factos
-house(1..5).
+house(1..5). %esquerda pa direita
 color(red;blue;white;orange;green).
 man(miguel;joao;pedro;daniel;carlos).
 club(academica;benfica;belenenses;fcporto;sporting).
@@ -116,14 +116,15 @@ son(carlos,daniel).
 :- married(miguel,F), not pet(F,parrot).
 
 %O avô(Pedro) do Carlos vive na primeira casa à esquerda.
-:- son(carlos, P), son(P,A),not lives(A,_,1).
+:- son(carlos, P), son(P,A), not lives(A,_,1).
 
-%Na casa laranja é-se adepto do F. C. Porto.
+%Na casa laranja é-se adepto do F.C. Porto.
 :- hasColor(H,orange), lives(M,_,H), not adept(M,fcporto).
 
 %O adepto da Académica vive na casa ao lado da dona da raposa.
 :- pet(F,fox), lives(_,F,H), lives(M,_,H1), neighbour(H1,H), not adept(M,academica).
 
+%(O PROBLEMA ESTÁ ENTRE ESTE E A RESTRIÇÃO DA CASA BRANCA)
 %O Pedro vive ao lado da casa azul.
 :- lives(pedro,_,H1), house(H1), neighbour(H1,H), not hasColor(H,blue).
 
@@ -131,11 +132,10 @@ son(carlos,daniel).
 :- adept(M,sporting), married(M,F), not pet(F,turtle).
 
 %O adepto do Benfica bebe sumol.
-:- adept(M,benfica),not drinks(M,sumol).
+:- adept(M,benfica), not drinks(M,sumol).
 
 %O pai(João) do Miguel bebe chá. 
 :- son(miguel,P), not drinks(P,tea).
-%:- not aux8.
 
 %O filho(Carlos) do Daniel é adepto do Belenenses.
 :- son(S, daniel), not adept(S, belenenses).
@@ -146,9 +146,9 @@ son(carlos,daniel).
 %Na casa verde bebe-se café.
 :- hasColor(H,green), lives(M,_,H), not drinks(M,coffee). 
 
+%(PROBLEMS)
 %A casa verde fica imediatamente à direita da casa branca. 
-%:- hasColor(H,white), hasColor(H1,green), not neighbour_R(H,H1).
-%:- hasColor(H,white), house(H1), neighbour_R(H,H1), not hasColor(H1,green).
+:- hasColor(H,white), hasColor(H1,green), not neighbour_R(H,H1).
 
 %Na casa do meio bebe-se leite. 
 :- lives(M,_,3), drinks(M,leite).
@@ -159,7 +159,6 @@ married(pedro,ana).
 %O Carlos não é casado com a Maria. 
 :- married(carlos,maria).
 
-
 %casamentos instáveis
 %do lado do homem
 unstable(M,F) :- married(M,F), married(M1,F1), pref(M,F,Nm1), pref(M,F1,Nm2), pref(F1,M,Nf1), pref(F1, M1, Nf2), Nf1>Nf2, Nm2>Nm1.
@@ -169,8 +168,9 @@ unstable(M,F) :- married(M,F), married(M1,F1), pref(M1,F,Nm1), pref(M1,F1,Nm2), 
 
 
 
+%#show man/1.
 %#show son/2.
-%#show lives/3.
+#show lives/3.
 %#show unstable/2.
 #show hasColor/2.
 %#show adept/2.
