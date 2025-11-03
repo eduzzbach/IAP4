@@ -90,12 +90,16 @@ pref(ana,miguel,1).
 1{drinks(M,D) : man(M)}1 :- drink(D). %cada bebida tem apenas 1 homem
 
 %definir vizinho lado específico
-neighbour_R(H,H1) :- house(H), house(H1), H1 = H + 1, H < 5.
-neighbour_L(H,H1) :- house(H), house(H1), H1 = H - 1, H > 1.
+neighbour_R(H,H1) :- house(H), house(H1), H1 = H + 1.
+neighbour_L(H,H1) :- house(H), house(H1), H1 = H - 1.
 
 %definir vizinho
-neighbour(H,H1) :- house(H1), house(H), H1 = H + 1, H < 5.
-neighbour(H,H1) :- house(H1), house(H), H1 = H - 1, H > 1.
+neighbour(H,H1) :- house(H1), house(H), H1 = H + 1.
+neighbour(H,H1) :- house(H1), house(H), H1 = H - 1.
+
+%definir casa do animal
+
+pethouse(P,H) :- lives(_,F,H), pet(F,P).
 
 %O Miguel é filho do João.
 son(miguel,joao).
@@ -119,14 +123,16 @@ son(carlos,daniel).
 :- son(carlos, P), son(P,A), not lives(A,_,1).
 
 %Na casa laranja é-se adepto do F.C. Porto.
-:- hasColor(H,orange), lives(M,_,H), not adept(M,fcporto).
+auxorange :- hasColor(H,orange), lives(M,_,H), not adept(M,fcporto).
+:- not auxorange.
 
 %O adepto da Académica vive na casa ao lado da dona da raposa.
-:- pet(F,fox), lives(_,F,H), lives(M,_,H1), neighbour(H1,H), not adept(M,academica).
+auxacad :- pet(F,fox), lives(_,F,H), lives(M,_,H1), neighbour(H1,H), adept(M,academica).
+:- auxacad.
 
-%(O PROBLEMA ESTÁ ENTRE ESTE E A RESTRIÇÃO DA CASA BRANCA)
 %O Pedro vive ao lado da casa azul.
-:- lives(pedro,_,H1), house(H1), neighbour(H1,H), not hasColor(H,blue).
+auxblue :- lives(pedro,_,H1), house(H1), neighbour(H1,H), hasColor(H,blue).
+:- not auxblue.
 
 %A mulher do adepto do Sporting tem uma tartaruga. 
 :- adept(M,sporting), married(M,F), not pet(F,turtle).
@@ -141,17 +147,18 @@ son(carlos,daniel).
 :- son(S, daniel), not adept(S, belenenses).
 
 %É adepto do F.C. Porto o morador da casa ao lado da casa onde mora a mulher que é dona do cavalo.
-:- lives(_,F,H), pet(F,horse), lives(M1,_,H1), neighbour(H,H1), not adept(M1,fcporto).
+auxporto :- lives(_,F,H), pet(F,horse), lives(M1,_,H1), neighbour(H,H1), not adept(M1,fcporto).
+:- not auxporto.
 
 %Na casa verde bebe-se café.
 :- hasColor(H,green), lives(M,_,H), not drinks(M,coffee). 
 
-%(PROBLEMS)
 %A casa verde fica imediatamente à direita da casa branca. 
 :- hasColor(H,white), hasColor(H1,green), not neighbour_R(H,H1).
 
 %Na casa do meio bebe-se leite. 
-:- lives(M,_,3), drinks(M,leite).
+auxmilk :- lives(M,_,3), not drinks(M,milk).
+:- not auxmilk.
 
 %O Pedro é casado com a Ana
 married(pedro,ana).
@@ -170,9 +177,10 @@ unstable(M,F) :- married(M,F), married(M1,F1), pref(M1,F,Nm1), pref(M1,F1,Nm2), 
 
 %#show man/1.
 %#show son/2.
-#show lives/3.
+%#show lives/3.
 %#show unstable/2.
-#show hasColor/2.
+%#show hasColor/2.
+%#show pethouse/2.
 %#show adept/2.
 %#show drinks/2.
 %#show married/2.
